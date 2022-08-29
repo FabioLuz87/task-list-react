@@ -1,6 +1,5 @@
 /* eslint-disable camelcase */
 /* eslint-disable no-alert */
-/* eslint-disable prettier/prettier */
 import React, { ReactElement, useEffect, useState } from 'react';
 import { RootState } from 'app/store';
 import axios from 'axios';
@@ -29,48 +28,44 @@ const style = {
 };
 
 interface Column {
-    id: 'id' | 'description' | 'detail' | 'actions' ;
-    label: string;
-    minWidth?: number;
-    align?: 'right';
-    format?: (value: number) => string;
+  id: 'id' | 'description' | 'detail' | 'actions';
+  label: string;
+  minWidth?: number;
+  align?: 'right';
+  format?: (value: number) => string;
 }
 
 const columns: Column[] = [
-    { id: 'id', label: '#', minWidth: 170 },
-    { id: 'description', label: 'Descrição', minWidth: 100 },
-    {
-      id: 'detail',
-      label: 'Detalhamento',
-      minWidth: 170,
-      align: 'right',
-      
-    },
-    {
-      id: 'actions',
-      label: 'Ações',
-      minWidth: 170,
-      align: 'right',
-    },
-  
- 
+  { id: 'id', label: '#', minWidth: 170 },
+  { id: 'description', label: 'Descrição', minWidth: 100 },
+  {
+    id: 'detail',
+    label: 'Detalhamento',
+    minWidth: 170,
+    align: 'right',
+  },
+  {
+    id: 'actions',
+    label: 'Ações',
+    minWidth: 170,
+    align: 'right',
+  },
 ];
 
 interface Data {
   id: string;
   description: string;
   detail: string;
-  actions: ReactElement,
+  actions: ReactElement;
 }
-  
-  
-export default function Task() {
-  const token = useSelector((state: RootState ) => state.user.data.currToken);
+
+export default function Task(): JSX.Element {
+  const token = useSelector((state: RootState) => state.user.data.currToken);
   const [inputDescription, setInputDescription] = React.useState('');
   const [inputDescriptionUpdate, setInputDescriptionUpdate] = React.useState('');
   const [inputDetail, setInputDetail] = React.useState('');
   const [inputDetailUpdate, setInputDetailUpdate] = React.useState('');
-  const [uuidLocal, setUuidLocal ] = React.useState('');
+  const [uuidLocal, setUuidLocal] = React.useState('');
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
   const [rows, setRows] = useState<Array<Data>>([]);
@@ -80,7 +75,7 @@ export default function Task() {
 
   const handleOpenUpdate = (uuid: string, description: string, detail: string) => {
     setOpenUpdate(true);
-    setUuidLocal(uuid)
+    setUuidLocal(uuid);
     setInputDescriptionUpdate(description);
     setInputDetailUpdate(detail);
   };
@@ -97,23 +92,24 @@ export default function Task() {
     setUuidLocal('');
   };
 
-
   useEffect(() => {
-    if(refreshTable) {
+    if (refreshTable) {
       setRows([]);
-      axios.get(`https://tasklist-back-crhist0.herokuapp.com/task/readTasksByUserId?token=${JSON.stringify(token)}`)
-      .then((response) => {
-        console.log("aqui: ",response.data.data);
-        loadList(response.data.data);
-      })
-      .catch((err) => {
-      console.log('err :', err);
-          alert('Deu Ruim')
-      })
-      setRefreshTable(false)
+      axios
+        .get(
+          `https://tasklist-back-crhist0.herokuapp.com/task/readTasksByUserId?token=${JSON.stringify(
+            token
+          )}`
+        )
+        .then((response) => {
+          loadList(response.data.data);
+        })
+        .catch((err) => {
+          alert('Não foi possível listar suas tarefas/recados.');
+        });
+      setRefreshTable(false);
     }
-
-}, [refreshTable])
+  }, [refreshTable]);
 
   const handleChangePage = (event: unknown, newPage: number) => {
     setPage(newPage);
@@ -126,9 +122,9 @@ export default function Task() {
 
   const loadList = (list: Data[]) => {
     list.forEach((item: Data) => {
-      setRows(prev => [...prev, item])
-    })
-  }
+      setRows((prev) => [...prev, item]);
+    });
+  };
 
   const onSave = () => {
     const body = {
@@ -137,18 +133,16 @@ export default function Task() {
       token,
     };
     axios
-    .post('https://tasklist-back-crhist0.herokuapp.com/task/', body)
-    .then((response) => {
-      console.log('aqui: ', response.data.data);
-      setRefreshTable(true)
-    })
-    .catch((err) => {
-      console.log('err :', err);
-      alert('Deu Ruim');
-    });
+      .post('https://tasklist-back-crhist0.herokuapp.com/task/', body)
+      .then((response) => {
+        setRefreshTable(true);
+      })
+      .catch((err) => {
+        alert('Não foi possível salvar seu recado');
+      });
 
     setInputDescription('');
-    setInputDetail('')
+    setInputDetail('');
   };
 
   const onDelete = (uuid: string) => {
@@ -157,17 +151,14 @@ export default function Task() {
         `https://tasklist-back-crhist0.herokuapp.com/task?token=${JSON.stringify(token)}&id=${uuid}`
       )
       .then((response) => {
-        console.log('aqui: ', response);
-        // buildList(response.data.data);
-         setRefreshTable(true);
+        setRefreshTable(true);
       })
       .catch((err) => {
-        console.log('err :', err);
         alert('Não foi possível realizar a exclusão');
       });
-    
+
     handleCloseDelete();
-  }
+  };
 
   const onUpdate = () => {
     const bodyEditing = {
@@ -177,23 +168,26 @@ export default function Task() {
       token,
     };
     axios
-    .put('https://tasklist-back-crhist0.herokuapp.com/task/', bodyEditing)
-    .then((response) => {
-      console.log('aqui: ', response.data.data);
-      setRefreshTable(true);
-      handleCloseUpdate();
-    })
-    .catch((err) => {
-      console.log('err :', err);
-      alert('Deu Ruim');
-    });
-
+      .put('https://tasklist-back-crhist0.herokuapp.com/task/', bodyEditing)
+      .then((response) => {
+        setRefreshTable(true);
+        handleCloseUpdate();
+      })
+      .catch((err) => {
+        alert('Não foi possível atualizar seu recado.');
+      });
   };
 
-  return(
-    <>
-      <Paper sx={{ width: '100%' }}>
-        <Box justifyContent='center'>
+  return (
+    <Box
+      sx={{ width: '100%', height: '100%' }}
+      display="flex"
+      flexDirection="column"
+      alignItems="center"
+      justifyContent="center"
+    >
+      <Paper sx={{ width: '90%' }}>
+        <Box display="flex" justifyContent="center" alignItems="center" gap={2} paddingTop={2}>
           <TextField
             id="descriptionInput"
             label="Descrição"
@@ -201,15 +195,18 @@ export default function Task() {
             onChange={(e) => setInputDescription(e.target.value)}
           />
           <TextField
+            sx={{ width: '50%' }}
             id="detailInput"
             label="Detalhamento"
             value={inputDetail}
-            onChange={(e) =>setInputDetail(e.target.value)}
+            onChange={(e) => setInputDetail(e.target.value)}
           />
-          <Button disabled={!inputDetail || !inputDescription} 
-            variant="text" 
-            color="primary" 
-            onClick={() => onSave() }
+          <Button
+            disabled={!inputDetail || !inputDescription}
+            sx={{ backgroundColor: 'lightblue' }}
+            color="primary"
+            variant="contained"
+            onClick={() => onSave()}
           >
             Salvar Recado
           </Button>
@@ -239,14 +236,29 @@ export default function Task() {
                         const value = row[column.id];
                         return (
                           <TableCell key={column.id} align={column.align}>
-                            {column.id === 'id' ? index + 1 : value}
-                            {column.id === 'actions' && <Box>
-                                <Button onClick={() => handleOpenUpdate(row.id, row.description, row.detail)} variant="outlined" color='primary'>Editar</Button>
-                                <Button onClick={() => handleOpenDelete(row.id)} variant="outlined" startIcon={<DeleteIcon />} color='error' >Apagar</Button>
+                            {column.id === 'id' ? index + 1 + page * rowsPerPage : value}
+                            {column.id === 'actions' && (
+                              <Box>
+                                <Button
+                                  onClick={() =>
+                                    handleOpenUpdate(row.id, row.description, row.detail)
+                                  }
+                                  variant="outlined"
+                                  color="primary"
+                                >
+                                  Editar
+                                </Button>
+                                <Button
+                                  onClick={() => handleOpenDelete(row.id)}
+                                  variant="outlined"
+                                  startIcon={<DeleteIcon />}
+                                  color="error"
+                                >
+                                  Apagar
+                                </Button>
                               </Box>
-                            }
+                            )}
                           </TableCell>
-                          
                         );
                       })}
                     </TableRow>
@@ -266,31 +278,36 @@ export default function Task() {
         />
       </Paper>
       <Modal
-          open={openUpdate}
-          onClose={handleCloseUpdate}
-          aria-labelledby="modal-modal-title"
-          aria-describedby="modal-modal-description"
-        >
-          <Box sx={style}>
-            <TextField
-              id="descriptionInputUpdate"
-              label="Descrição"
-              value={inputDescriptionUpdate}
-              onChange={(e) => setInputDescriptionUpdate(e.target.value)}
-            />
-            <TextField
-              id="detailInputUpdate"
-              label="Detalhamento"
-              value={inputDetailUpdate}
-              onChange={(e) => setInputDetailUpdate(e.target.value)}
-            />
-            <Button onClick={onUpdate}  variant="text" disabled={!inputDescriptionUpdate || !inputDetailUpdate} color="primary">
-              Confirmar
-            </Button>
-            <Button onClick={handleCloseUpdate} variant="text" color="primary">
-              Cancelar
-            </Button>
-          </Box>
+        open={openUpdate}
+        onClose={handleCloseUpdate}
+        aria-labelledby="modal-modal-title"
+        aria-describedby="modal-modal-description"
+      >
+        <Box sx={style}>
+          <TextField
+            id="descriptionInputUpdate"
+            label="Descrição"
+            value={inputDescriptionUpdate}
+            onChange={(e) => setInputDescriptionUpdate(e.target.value)}
+          />
+          <TextField
+            id="detailInputUpdate"
+            label="Detalhamento"
+            value={inputDetailUpdate}
+            onChange={(e) => setInputDetailUpdate(e.target.value)}
+          />
+          <Button
+            onClick={onUpdate}
+            variant="text"
+            disabled={!inputDescriptionUpdate || !inputDetailUpdate}
+            color="primary"
+          >
+            Confirmar
+          </Button>
+          <Button onClick={handleCloseUpdate} variant="text" color="primary">
+            Cancelar
+          </Button>
+        </Box>
       </Modal>
       <Modal
         open={openDelete}
@@ -310,6 +327,6 @@ export default function Task() {
           </Button>
         </Box>
       </Modal>
-  </>
-    );
+    </Box>
+  );
 }

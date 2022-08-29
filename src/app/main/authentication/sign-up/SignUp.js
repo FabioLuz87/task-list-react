@@ -44,7 +44,6 @@ function SignUp() {
   const { isValid, dirtyFields, errors, setError } = formState;
 
   function onSubmit({ name, pass, Rpass }) {
-    console.log("aqui");
     jwtService
       .createUser({
         name,

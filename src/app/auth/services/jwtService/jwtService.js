@@ -54,7 +54,6 @@ class JwtService extends FuseUtils.EventEmitter {
   };
 
   createUser = (data) => {
-    console.log('data: ', data);
     return new Promise((resolve, reject) => {
       axios.post('https://tasklist-back-crhist0.herokuapp.com/user/', data).then((response) => {
         if (response.data.ok) {

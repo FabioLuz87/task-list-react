@@ -1,14 +1,11 @@
+/* eslint-disable no-alert */
 import { yupResolver } from '@hookform/resolvers/yup';
 import { Controller, useForm } from 'react-hook-form';
 import Button from '@mui/material/Button';
-import Checkbox from '@mui/material/Checkbox';
-import FormControl from '@mui/material/FormControl';
-import FormControlLabel from '@mui/material/FormControlLabel';
 import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
 import { Link } from 'react-router-dom';
 import * as yup from 'yup';
-import FuseSvgIcon from '@fuse/core/FuseSvgIcon';
 import Paper from '@mui/material/Paper';
 import { useEffect, useState } from 'react';
 import { Box } from '@mui/system';
@@ -48,19 +45,7 @@ function SignIn() {
   }, [setValue]);
 
   function onSubmit({ email, password }) {
-    console.log(email);
-    console.log(password);
-
-    // jwtService.signInWithEmailAndPassword(email, password).then((user) => {
-    //     // No need to do anything, user data will be set at app/auth/AuthContext
-    //   }).catch((_errors) => {
-    //     _errors.forEach((error) => {
-    //       setError(error.type, {
-    //         type: 'manual',
-    //         message: error.message,
-    //       });
-    //     });
-    //   });
+    // nothing to do
   }
 
   const [user, setUser] = useState('');
@@ -209,63 +194,17 @@ function SignIn() {
               )}
             />
 
-            <div className="flex flex-col sm:flex-row items-center justify-center sm:justify-between">
-              <Controller
-                name="remember"
-                control={control}
-                render={({ field }) => (
-                  <FormControl>
-                    <FormControlLabel
-                      label="Remember me"
-                      control={<Checkbox size="small" {...field} />}
-                    />
-                  </FormControl>
-                )}
-              />
-
-              <Link className="text-md font-medium" to="/pages/auth/forgot-password">
-                Forgot password?
-              </Link>
-            </div>
-
             <Button
               variant="contained"
               color="secondary"
               className=" w-full mt-16"
               aria-label="Sign in"
-              // disabled={_.isEmpty(dirtyFields) || !isValid}
               type="button"
               size="large"
               onClick={handleClick}
             >
               Sign in
             </Button>
-
-            <div className="flex items-center mt-32">
-              <div className="flex-auto mt-px border-t" />
-              <Typography className="mx-8" color="text.secondary">
-                Or continue with
-              </Typography>
-              <div className="flex-auto mt-px border-t" />
-            </div>
-
-            <div className="flex items-center mt-32 space-x-16">
-              <Button variant="outlined" className="flex-auto">
-                <FuseSvgIcon size={20} color="action">
-                  feather:facebook
-                </FuseSvgIcon>
-              </Button>
-              <Button variant="outlined" className="flex-auto">
-                <FuseSvgIcon size={20} color="action">
-                  feather:twitter
-                </FuseSvgIcon>
-              </Button>
-              <Button variant="outlined" className="flex-auto">
-                <FuseSvgIcon size={20} color="action">
-                  feather:github
-                </FuseSvgIcon>
-              </Button>
-            </div>
           </form>
         </div>
       </Paper>
