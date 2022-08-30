@@ -20,7 +20,7 @@ const style = {
   top: '50%',
   left: '50%',
   transform: 'translate(-50%, -50%)',
-  width: 400,
+  width: 700,
   bgcolor: 'background.paper',
   border: '2px solid #000',
   boxShadow: 24,
@@ -291,22 +291,26 @@ export default function Task(): JSX.Element {
             onChange={(e) => setInputDescriptionUpdate(e.target.value)}
           />
           <TextField
+            sx={{ marginY: '8px' }}
+            fullWidth
             id="detailInputUpdate"
             label="Detalhamento"
             value={inputDetailUpdate}
             onChange={(e) => setInputDetailUpdate(e.target.value)}
           />
-          <Button
-            onClick={onUpdate}
-            variant="text"
-            disabled={!inputDescriptionUpdate || !inputDetailUpdate}
-            color="primary"
-          >
-            Confirmar
-          </Button>
-          <Button onClick={handleCloseUpdate} variant="text" color="primary">
-            Cancelar
-          </Button>
+          <Box display="flex" gap={2}>
+            <Button
+              onClick={onUpdate}
+              variant="outlined"
+              disabled={!inputDescriptionUpdate || !inputDetailUpdate}
+              color="primary"
+            >
+              Confirmar
+            </Button>
+            <Button onClick={handleCloseUpdate} variant="outlined" color="error">
+              Cancelar
+            </Button>
+          </Box>
         </Box>
       </Modal>
       <Modal
@@ -315,16 +319,18 @@ export default function Task(): JSX.Element {
         aria-labelledby="modal-modal-title"
         aria-describedby="modal-modal-description"
       >
-        <Box sx={style}>
+        <Box sx={style} gap={2}>
           <Typography id="modal-modal-title" variant="h6" component="h2">
             Deseja mesmo apagar o item?
           </Typography>
-          <Button onClick={() => onDelete(uuidLocal)} variant="text" color="success">
-            Confirmar
-          </Button>
-          <Button onClick={handleCloseDelete} variant="text" color="error">
-            Cancelar
-          </Button>
+          <Box display="flex" gap={2}>
+            <Button onClick={() => onDelete(uuidLocal)} variant="outlined" color="success">
+              Confirmar
+            </Button>
+            <Button onClick={handleCloseDelete} variant="outlined" color="error">
+              Cancelar
+            </Button>
+          </Box>
         </Box>
       </Modal>
     </Box>
