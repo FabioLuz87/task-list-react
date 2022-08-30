@@ -1,17 +1,10 @@
 /* eslint-disable camelcase */
-/* eslint-disable prettier/prettier */
 import FuseUtils from '@fuse/utils/FuseUtils';
-import HeaderFullScreenToggle from 'app/theme-layouts/shared-components/FullScreenToggle';
 import axios from 'axios';
 import jwtDecode from 'jwt-decode';
 import jwtServiceConfig from './jwtServiceConfig';
 
-
-
-
-
 class JwtService extends FuseUtils.EventEmitter {
-  
   init() {
     this.setInterceptors();
     this.handleAuthentication();
@@ -23,7 +16,7 @@ class JwtService extends FuseUtils.EventEmitter {
         return response;
       },
       (err) => {
-        return new Promise((resolve, reject) => {
+        return new Promise(() => {
           if (err.response.status === 401 && err.config && !err.config.__isRetryRequest) {
             // if you ever get an unauthorized response, logout the user
             this.emit('onAutoLogout', 'Invalid access_token');
@@ -54,20 +47,22 @@ class JwtService extends FuseUtils.EventEmitter {
   };
 
   createUser = (data) => {
-    return new Promise((resolve, reject) => {
-      axios.post('https://tasklist-back-crhist0.herokuapp.com/user/', data).then((response) => {
-        if (response.data.ok) {
+    return new Promise((resolve) => {
+      axios
+        .post('https://tasklist-back-crhist0.herokuapp.com/user/', data)
+        .then((response) => {
+          if (response.data.ok) {
+            // eslint-disable-next-line no-alert
+            alert(response.data.data);
+            resolve(response.data.ok);
+          }
+        })
+        .catch((err) => {
           // eslint-disable-next-line no-alert
-          alert(response.data.data);
-          // eslint-disable-next-line no-alert
-          alert("Retorne a página de Sign In e entre na aplicação.")
-          resolve(response.data.ok);
-        } else {
-          reject(response);
-        }
-      });
+          alert(err.response.data.error);
+        });
     });
-  };  
+  };
 
   signInWithEmailAndPassword = (email, password) => {
     return new Promise((resolve, reject) => {
@@ -107,7 +102,7 @@ class JwtService extends FuseUtils.EventEmitter {
             reject(new Error('Failed to login with token.'));
           }
         })
-        .catch((error) => {
+        .catch(() => {
           this.logout();
           reject(new Error('Failed to login with token.'));
         });

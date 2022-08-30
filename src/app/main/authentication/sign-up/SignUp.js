@@ -1,19 +1,18 @@
 import { yupResolver } from '@hookform/resolvers/yup';
 import { Controller, useForm } from 'react-hook-form';
 import Button from '@mui/material/Button';
-import Checkbox from '@mui/material/Checkbox';
-import FormControl from '@mui/material/FormControl';
-import FormControlLabel from '@mui/material/FormControlLabel';
 import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
 import { Link } from 'react-router-dom';
 import * as yup from 'yup';
-import _ from '@lodash';
 import AvatarGroup from '@mui/material/AvatarGroup';
 import Avatar from '@mui/material/Avatar';
 import Box from '@mui/material/Box';
 import Paper from '@mui/material/Paper';
-import FormHelperText from '@mui/material/FormHelperText';
+import { useDispatch } from 'react-redux';
+import { setRole } from 'app/store/userSlice';
+import axios from 'axios';
+import { useState } from 'react';
 import jwtService from '../../../auth/services/jwtService';
 
 /**
@@ -35,13 +34,15 @@ const defaultValues = {
 };
 
 function SignUp() {
-  const { control, formState, handleSubmit, reset } = useForm({
+  const { control, formState, handleSubmit } = useForm({
     mode: 'onChange',
     defaultValues,
     resolver: yupResolver(schema),
   });
 
-  const { isValid, dirtyFields, errors, setError } = formState;
+  const dispatch = useDispatch();
+
+  const { errors, setError } = formState;
 
   function onSubmit({ name, pass, Rpass }) {
     jwtService
@@ -50,8 +51,19 @@ function SignUp() {
         pass,
         Rpass,
       })
-      .then((user) => {
-        // No need to do anything, registered user data will be set at app/auth/AuthContext
+      .then(() => {
+        const newUser = {
+          name,
+          pass,
+        };
+        const user = name;
+
+        axios
+          .post('https://tasklist-back-crhist0.herokuapp.com/user/login', newUser)
+          .then((response) => {
+            const currToken = response.data.data;
+            dispatch(setRole({ role: 'admin', user, currToken }));
+          });
       })
       .catch((_errors) => {
         _errors.forEach((error) => {

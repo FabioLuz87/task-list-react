@@ -1,4 +1,5 @@
-/* eslint-disable no-alert */
+/* eslint-disable @typescript-eslint/explicit-module-boundary-types */
+
 import { yupResolver } from '@hookform/resolvers/yup';
 import { Controller, useForm } from 'react-hook-form';
 import Button from '@mui/material/Button';
@@ -31,22 +32,18 @@ const defaultValues = {
 };
 
 function SignIn() {
-  const { control, formState, handleSubmit, setError, setValue } = useForm({
+  const { control, formState, handleSubmit, setValue } = useForm({
     mode: 'onChange',
     defaultValues,
     resolver: yupResolver(schema),
   });
 
-  const { isValid, dirtyFields, errors } = formState;
+  const { errors } = formState;
 
   useEffect(() => {
     setValue('email', 'admin', { shouldDirty: true, shouldValidate: true });
     setValue('password', 'admin', { shouldDirty: true, shouldValidate: true });
   }, [setValue]);
-
-  function onSubmit({ email, password }) {
-    // nothing to do
-  }
 
   const [user, setUser] = useState('');
   const [password, setPassword] = useState('');
@@ -65,10 +62,9 @@ function SignIn() {
       );
 
       const currToken = response.data.data;
-      dispatch(setRole({ role: 'admin', user, currToken}));
-
-      History.push('/task');
+      dispatch(setRole({ role: 'admin', user, currToken }));
     } catch (error) {
+      // eslint-disable-next-line no-alert
       alert(error.response.data.error);
     }
   }
@@ -151,7 +147,7 @@ function SignIn() {
             name="loginForm"
             noValidate
             className="flex flex-col justify-center w-full mt-32"
-            onSubmit={handleSubmit(onSubmit)}
+            onSubmit={handleSubmit}
           >
             <Controller
               name="email"
